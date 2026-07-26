@@ -17,24 +17,22 @@ jobs:
       with:
         node-version: '20'
     
-    - name: Install dependencies
+    - name: Install Capacitor
       run: npm install @capacitor/core @capacitor/cli @capacitor/android
     
-    - name: Create web dir and copy assets
+    - name: Setup web dir
       run: |
         mkdir -p web
-        cp index.html manifest.json sw.js icon-*.png fish*.jpg web/ 2>/dev/null || true
+        cp index.html manifest.json sw.js icon-*.png fish*.jpg web/
     
-    - name: Initialize Capacitor (skip if exists)
-      run: |
-        if [ ! -f capacitor.config.json ]; then
-          npx cap init FISHR com.fishr.app --web-dir=web
-        fi
+    - name: Initialize Capacitor
+      run: npx cap init FISHR com.fishr.app --web-dir=web
     
-    - name: Add Android and sync
-      run: |
-        npx cap add android || true
-        npx cap sync android
+    - name: Add Android
+      run: npx cap add android
+    
+    - name: Sync
+      run: npx cap sync android
     
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -46,9 +44,10 @@ jobs:
       run: |
         cd android
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+        ./gradlew assembleDebug --no-daemon 2>&1
     
     - name: Upload APK
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: fishr-apk
