@@ -1,0 +1,19 @@
+{
+  "name": "fishr",
+  "version": "1.0.0",
+  "description": "FISHR - AI-powered fishing catch log",
+  "scripts": {
+    "build": "echo 'Web app already built - index.html is the app'",
+    "dev": "python3 server.py"
+  },
+  "main": "sw.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.4.2",
+    "@capacitor/cli": "^8.4.2",
+    "@capacitor/core": "^8.4.2"
+  }
+}
