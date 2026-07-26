@@ -16,31 +16,25 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: /home/umbrel/umbrel/external/fishr-app/package-lock.json
     
-    - name: Install Capacitor
+    - name: Install dependencies
       run: npm install @capacitor/core @capacitor/cli @capacitor/android
     
-    - name: Initialize Capacitor
-      run: npx cap init FISHR com.fishr.app --web-dir=.
-    
-    - name: Add Android platform
-      run: npx cap add android
-    
-    - name: Copy web assets
+    - name: Create web dir and copy assets
       run: |
-        cp index.html .
-        cp manifest.json .
-        cp sw.js .
-        cp -r icon-*.png .
-        cp -r fish*.jpg . 2>/dev/null || true
+        mkdir -p web
+        cp index.html manifest.json sw.js icon-*.png fish*.jpg web/ 2>/dev/null || true
     
-    - name: Build web app
-      run: npm run build || echo "No build script needed"
+    - name: Initialize Capacitor (skip if exists)
+      run: |
+        if [ ! -f capacitor.config.json ]; then
+          npx cap init FISHR com.fishr.app --web-dir=web
+        fi
     
-    - name: Sync to Android
-      run: npx cap sync android
+    - name: Add Android and sync
+      run: |
+        npx cap add android || true
+        npx cap sync android
     
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -48,7 +42,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     
-    - name: Build debug APK
+    - name: Build APK
       run: |
         cd android
         chmod +x gradlew
