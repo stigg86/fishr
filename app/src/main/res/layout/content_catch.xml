@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0a1628"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Photo Section -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="#16243d"
+            android:layout_marginBottom="16dp">
+            <ImageView
+                android:id="@+id/catch_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/catch_photo_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_camera"
+                    android:tint="#3a4a5e"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to take photo"
+                    android:textColor="#3a4a5e"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Camera Button -->
+        <Button
+            android:id="@+id/btn_camera"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="📷 Take Photo"
+            android:backgroundTint="#16243d"
+            android:textColor="#00d4aa"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Location & Date -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+            <TextView
+                android:id="@+id/catch_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="📍 Getting location..."
+                android:textColor="#6b7c8d"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/catch_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#6b7c8d"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <!-- Species -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Species"
+            android:textColor="#6b7c8d"
+            android:textSize="12sp"
+            android:layout_marginBottom="6dp"/>
+        <Spinner
+            android:id="@+id/species_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#16243d"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+        <EditText
+            android:id="@+id/catch_species"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Or type species name..."
+            android:textColorHint="#3a4a5e"
+            android:textColor="#ffffff"
+            android:background="#16243d"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Weight & Length -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginRight="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight (kg)"
+                    android:textColor="#6b7c8d"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp"/>
+                <EditText
+                    android:id="@+id/catch_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="0.0"
+                    android:textColorHint="#3a4a5e"
+                    android:textColor="#ffffff"
+                    android:background="#16243d"
+                    android:padding="12dp"
+                    android:inputType="numberDecimal"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginLeft="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Length (cm)"
+                    android:textColor="#6b7c8d"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp"/>
+                <EditText
+                    android:id="@+id/catch_length"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="0"
+                    android:textColorHint="#3a4a5e"
+                    android:textColor="#ffffff"
+                    android:background="#16243d"
+                    android:padding="12dp"
+                    android:inputType="numberDecimal"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Notes -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notes"
+            android:textColor="#6b7c8d"
+            android:textSize="12sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="6dp"/>
+        <EditText
+            android:id="@+id/catch_notes"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:hint="Bait, conditions, etc..."
+            android:textColorHint="#3a4a5e"
+            android:textColor="#ffffff"
+            android:background="#16243d"
+            android:padding="12dp"
+            android:gravity="top"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btn_save_catch"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="🐟 Save Catch"
+            android:backgroundTint="#00d4aa"
+            android:textColor="#0a1628"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"/>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#00d4aa">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FISHR">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <title>FISHR 🐟</title>
+  <style>
+    :root {
+      --bg: #0a1628;
+      --card: #16243d;
+      --accent: #00d4aa;
+      --text: #ffffff;
+      --muted: #6b7c8d;
+      --danger: #ff6b6b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .app { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Header */
+    .header {
+      padding: 16px;
+      background: var(--card);
+      text-align: center;
+      border-bottom: 2px solid var(--accent);
+    }
+    .header h1 { font-size: 28px; color: var(--accent); letter-spacing: 4px; }
+    .header p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    
+    /* Content */
+    .content { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+    
+    /* Tab Content */
+    .tab-content { display: none; padding: 16px; }
+    .tab-content.active { display: block; }
+    
+    /* Cards */
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    /* Photo Section */
+    .photo-area {
+      background: #0f2847;
+      border-radius: 12px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-area img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .photo-area .placeholder {
+      color: var(--muted);
+      text-align: center;
+    }
+    .photo-area .placeholder svg { width: 48px; height: 48px; fill: var(--muted); margin-bottom: 8px; }
+    
+    /* Camera Button */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid #2a4a6e; }
+    .btn-danger { background: var(--danger); color: white; }
+    
+    /* Form */
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 12px;
+      background: var(--card);
+      border: 1px solid #2a4a6e;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 16px;
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    
+    /* Catch Log */
+    .catch-item {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .catch-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #0f2847;
+    }
+    .catch-info { flex: 1; }
+    .catch-species { font-weight: 600; font-size: 16px; }
+    .catch-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .catch-empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+    .catch-empty svg { width: 64px; height: 64px; fill: var(--muted); margin-bottom: 12px; opacity: 0.5; }
+    
+    /* License Card */
+    .license-card {
+      background: linear-gradient(135deg, #1a3a5c 0%, #0f2847 100%);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      border: 2px solid var(--accent);
+      margin-bottom: 20px;
+    }
+    .license-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--card);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--accent);
+      overflow: hidden;
+    }
+    .license-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .license-photo .initials {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+    .license-name { font-size: 24px; font-weight: bold; color: var(--accent); margin-bottom: 8px; }
+    .license-detail { color: var(--muted); font-size: 14px; margin-bottom: 4px; }
+    .license-qr {
+      width: 80px;
+      height: 80px;
+      background: white;
+      margin: 16px auto 0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #999;
+    }
+    
+    /* Bottom Nav */
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      display: flex;
+      border-top: 1px solid #2a4a6e;
+      padding: 8px 0;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav-btn.active { color: var(--accent); }
+    .nav-btn svg { width: 24px; height: 24px; margin-bottom: 4px; }
+    .nav-btn span { font-size: 11px; }
+    
+    /* AI Badge */
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: var(--bg);
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    .toast.show { opacity: 1; }
+    
+    /* Loading */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    .loading.show { display: block; }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--card);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Species List Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal.show { display: flex; align-items: center; justify-content: center; }
+    .modal-content {
+      background: var(--card);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 16px;
+      border-bottom: 1px solid #2a4a6e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 18px; font-weight: 600; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 24px; cursor: pointer; }
+    .modal-body { max-height: 60vh; overflow-y: auto; padding: 8px; }
+    .species-item {
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .species-item:hover { background: #2a4a6e; }
+    .species-item.selected { background: var(--accent); color: var(--bg); }
+    
+    /* Hidden */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>FISHR</h1>
+      <p>Your Personal Catch Log</p>
+    </header>
+    
+    <div class="content">
+      <!-- Catch Tab -->
+      <div id="tab-catch" class="tab-content active">
+        <div class="ai-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Fish ID powered by AI
+        </div>
+        
+        <div class="photo-area" id="photo-area">
+          <img id="catch-photo" class="hidden" />
+          <div class="placeholder" id="photo-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M12,15.2A3.2,3.2 0 0,0 15.2,12 3.2,3.2 0 0,0 12,8.8 3.2,3.2 0 0,0 8.8,12 3.2,3.2 0 0,0 12,15.2M9,2L7.17,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4H16.83L15,2H9M12,17A5,5 0 0,1 7,12 5,5 0 0,1 12,7 5,5 0 0,1 17,12 5,5 0 0,1 12,17"/></svg>
+            <p>Tap to take photo</p>
+          </div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden">
+        
+        <button class="btn btn-primary" id="btn-camera">📷 Take Photo</button>
+        
+        <div class="card">
+          <div class="card-title">📍 Location & Time</div>
+          <p id="catch-location" style="font-size: 14px; color: var(--muted);">Getting location...</p>
+          <p id="catch-datetime" style="font-size: 14px; color: var(--muted); margin-top: 4px;"></p>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">🐟 Species</div>
+          <div class="form-group">
+            <select id="species-select" class="form-select">
+              <option value="">Select or search species...</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary" id="btn-browse-species">📋 Browse All Species</button>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Weight (kg)</label>
+            <input type="number" id="catch-weight" class="form-input" placeholder="0.0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Length (cm)</label>
+            <input type="number" id="catch-length" class="form-input" placeholder="0" step="1">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea id="catch-notes" class="form-textarea" placeholder="Bait, conditions, etc..."></textarea>
+        </div>
+        
+        <button class="btn btn-primary" id="btn-save">🐟 Save Catch</button>
+      </div>
+      
+      <!-- Log Tab -->
+      <div id="tab-log" class="tab-content">
+        <div id="catch-list"></div>
+        <div id="catch-empty" class="catch-empty">
+          <svg viewBox="0 0 24 24"><path d="M12,20C12,20 4,14 4,9C4,5.5 7,3 10,3C11.5,3 12,4 12,4C12,4 12.5,3 14,3C17,3 20,5.5 20,9C20,14 12,20 12,20M9,8A1,1 0 0,1 10,9A1,1 0 0,1 9,10A1,1 0 0,1 8,9A1,1 0 0,1 9,8M15,8A1,1 0 0,1 16,9A1,1 0 0,1 15,10A1,1 0 0,1 14,9A1,1 0 0,1 15,8Z"/></svg>
+          <p>No catches yet</p>
+          <p style="font-size: 14px; margin-top: 8px;">Go catch something! 🐟</p>
+        </div>
+      </div>
+      
+      <!-- License Tab -->
+      <div id="tab-license" class="tab-content">
+        <div class="license-card" id="license-display">
+          <div class="license-photo" id="license-photo">
+            <span class="initials" id="license-initials">ST</span>
+          </div>
+          <div class="license-name" id="license-name">Your Name</div>
+          <div class="license-detail" id="license-number">No: ---</div>
+          <div class="license-detail" id="license-class">Class: ---</div>
+          <div class="license-detail" id="license-expiry">Expires: ---</div>
+          <div class="license-qr">QR Code</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">✏️ Edit License</div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="edit-name" class="form-input" placeholder="Your Name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">License Number</label>
+            <input type="text" id="edit-number" class="form-input" placeholder="License No.">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Class</label>
+            <input type="text" id="edit-class" class="form-input" placeholder="Class">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expiry Date</label>
+            <input type="text" id="edit-expiry" class="form-input" placeholder="DD/MM/YYYY">
+          </div>
+          <button class="btn btn-primary" id="btn-save-license">Save License</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bottom Nav -->
+    <nav class="nav">
+      <button class="nav-btn active" data-tab="catch">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12,20C12,20 4,14 4,9C4,5.5 7,3 10,3C11.5,3 12,4 12,4C12,4 12.5,3 14,3C17,3 20,5.5 20,9C20,14 12,20 12,20M9,8A1,1 0 0,1 10,9A1,1 0 0,1 9,10A1,1 0 0,1 8,9A1,1 0 0,1 9,8M15,8A1,1 0 0,1 16,9A1,1 0 0,1 15,10A1,1 0 0,1 14,9A1,1 0 0,1 15,8Z"/></svg>
+        <span>Catch</span>
+      </button>
+      <button class="nav-btn" data-tab="log">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3,13H5V11H3V13M3,17H5V15H3V17M3,9H5V7H3V9M7,13H21V11H7V13M7,17H21V15H7V17M7,7V9H21V7H7Z"/></svg>
+        <span>Log</span>
+      </button>
+      <button class="nav-btn" data-tab="license">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4,4H18A2,2 0 0 1 20,6V18A2,2 0 0 1 18,20H4A2,2 0 0 1 2,18V6A2,2 0 0 1 4,4M4,6V18H18V6H4M6,8H16V10H6V8M6,12H16V14H6V12M6,16H12V18H6V16Z"/></svg>
+        <span>License</span>
+      </button>
+    </nav>
+    
+    <!-- Species Modal -->
+    <div id="species-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="modal-title">Select Species</span>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="species-list"></div>
+      </div>
+    </div>
+    
+    <!-- Toast -->
+    <div id="toast" class="toast">Saved!</div>
+  </div>
+
+  <script>
+    // Species Database
+    const SPECIES = [
+      "Atlantic Mackerel", "European Sea Bass", "Dusky Grouper", "Red Mullet",
+      "Common Cutlassfish", "Blue Whiting", "Atlantic Horse Mackerel", "European Hake",
+      "Anglerfish", "Thornback Ray", "Spiny Dogfish", "Blue Shark", "Shortfin Mako",
+      "Thresher Shark", "Common Stingray", "Gilt Head Bream", "Red Bream", "Black Bream",
+      "Common Dentex", "White Sea Bream", "Annular Sea Bream", "Salema", "Ocean Sunfish",
+      "Atlantic Bonito", "Skipjack Tuna", "Little Tunny", "Swordfish", "European Eel",
+      "Greater Weever", "Streaked Gurnard", "Tub Gurnard", "Longspined Scorpionfish",
+      "Red Scorpionfish", "Comber", "Ballan Wrasse", "Corkwing Wrasse", "Peacock Wrasse",
+      "Rainbow Wrasse", "Mediterranean Moray", "Sea Urchin", "Octopus", "Common Cuttlefish",
+      "European Lobster", "Spider Crab", "Edible Crab", "Striped Red Mullet", "Atlantic Croaker",
+      "Black Sea Bass", "Cunner", "Mediterranean Rainbow Wrasse", "Brown Wrasse", "Goldline",
+      "Bass Grouper", "White Grouper", "Yellow-edged Lyretail", "Canary Grouper",
+      "Peacock Wrasse", "African Wrasse", "Mediterranean Sand Eel", "Greater Amberjack",
+      "Lesser Amberjack", "Almaco Jack", "Blue Runner", "Yellowtail Amberjack"
+    ].sort();
+
+    // State
+    let currentPhoto = null;
+    let currentLocation = { lat: 0, lng: 0 };
+    let catches = JSON.parse(localStorage.getItem('fishr_catches') || '[]');
+    let license = JSON.parse(localStorage.getItem('fishr_license') || '{}');
+
+    // DOM Elements
+    const photoArea = document.getElementById('photo-area');
+    const photoInput = document.getElementById('photo-input');
+    const catchPhoto = document.getElementById('catch-photo');
+    const photoPlaceholder = document.getElementById('photo-placeholder');
+    const catchLocation = document.getElementById('catch-location');
+    const catchDatetime = document.getElementById('catch-datetime');
+    const speciesSelect = document.getElementById('species-select');
+    const catchList = document.getElementById('catch-list');
+    const catchEmpty = document.getElementById('catch-empty');
+
+    // Init
+    function init() {
+      populateSpecies();
+      setupNav();
+      setupPhoto();
+      setupForms();
+      loadLicense();
+      renderCatchLog();
+      updateDateTime();
+      getLocation();
+      
+      // Refresh time every minute
+      setInterval(updateDateTime, 60000);
+    }
+
+    function populateSpecies() {
+      SPECIES.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        speciesSelect.appendChild(opt);
+      });
+    }
+
+    function setupNav() {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+          showTab(tab);
+        });
+      });
+    }
+
+    function showTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      
+      if (tab === 'log') renderCatchLog();
+    }
+
+    function setupPhoto() {
+      document.getElementById('btn-camera').addEventListener('click', () => {
+        photoInput.click();
+      });
+      
+      photoArea.addEventListener('click', () => {
+        photoInput.click();
+      });
+      
+      photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            currentPhoto = ev.target.result;
+            catchPhoto.src = currentPhoto;
+            catchPhoto.classList.remove('hidden');
+            photoPlaceholder.classList.add('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    function setupForms() {
+      document.getElementById('btn-save').addEventListener('click', saveCatch);
+      document.getElementById('btn-save-license').addEventListener('click', saveLicense);
+      document.getElementById('btn-browse-species').addEventListener('click', showSpeciesModal);
+      document.getElementById('modal-close').addEventListener('click', hideSpeciesModal);
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      catchDatetime.textContent = now.toLocaleDateString('en-GB', { 
+        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            catchLocation.textContent = `📍 ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`;
+          },
+          () => {
+            catchLocation.textContent = '📍 Location unavailable';
+          }
+        );
+      }
+    }
+
+    function saveCatch() {
+      const species = speciesSelect.value;
+      if (!species) {
+        showToast('Please select a species 🐟');
+        return;
+      }
+      
+      const entry = {
+        id: Date.now().toString(36),
+        species,
+        weight: parseFloat(document.getElementById('catch-weight').value) || 0,
+        length: parseFloat(document.getElementById('catch-length').value) || 0,
+        notes: document.getElementById('catch-notes').value,
+        photo: currentPhoto,
+        location: currentLocation,
+        timestamp: new Date().toISOString()
+      };
+      
+      catches.unshift(entry);
+      localStorage.setItem('fishr_catches', JSON.stringify(catches));
+      
+      // Reset form
+      currentPhoto = null;
+      catchPhoto.src = '';
+      catchPhoto.classList.add('hidden');
+      photoPlaceholder.classList.remove('hidden');
+      document.getElementById('catch-weight').value = '';
+      document.getElementById('catch-length').value = '';
+      document.getElementById('catch-notes').value = '';
+      speciesSelect.value = '';
+      
+      showToast('Catch saved! 🐟');
+      showTab('log');
+    }
+
+    function renderCatchLog() {
+      if (catches.length === 0) {
+        catchList.innerHTML = '';
+        catchEmpty.classList.remove('hidden');
+        return;
+      }
+      
+      catchEmpty.classList.add('hidden');
+      catchList.innerHTML = catches.map(c => `
+        <div class="catch-item">
+          ${c.photo ? `<img src="${c.photo}" alt="${c.species}">` : '<div style="width:60px;height:60px;background:#0f2847;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;">🐟</div>'}
+          <div class="catch-info">
+            <div class="catch-species">${c.species}</div>
+            <div class="catch-meta">
+              ${c.weight ? c.weight + ' kg' : ''} ${c.length ? c.length + ' cm' : ''}
+              <br>${new Date(c.timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function saveLicense() {
+      license = {
+        name: document.getElementById('edit-name').value || 'Your Name',
+        number: document.getElementById('edit-number').value || '---',
+        class: document.getElementById('edit-class').value || '---',
+        expiry: document.getElementById('edit-expiry').value || '---'
+      };
+      localStorage.setItem('fishr_license', JSON.stringify(license));
+      loadLicense();
+      showToast('License saved! 📋');
+    }
+
+    function loadLicense() {
+      const name = license.name || 'Your Name';
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'ST';
+      
+      document.getElementById('license-name').textContent = name;
+      document.getElementById('license-initials').textContent = initials;
+      document.getElementById('license-number').textContent = 'No: ' + (license.number || '---');
+      document.getElementById('license-class').textContent = 'Class: ' + (license.class || '---');
+      document.getElementById('license-expiry').textContent = 'Expires: ' + (license.expiry || '---');
+      
+      document.getElementById('edit-name').value = name === 'Your Name' ? '' : name;
+      document.getElementById('edit-number').value = license.number || '';
+      document.getElementById('edit-class').value = license.class || '';
+      document.getElementById('edit-expiry').value = license.expiry || '';
+    }
+
+    function showSpeciesModal() {
+      const list = document.getElementById('species-list');
+      list.innerHTML = SPECIES.map(s => `
+        <div class="species-item" data-species="${s}">${s}</div>
+      `).join('');
+      
+      list.querySelectorAll('.species-item').forEach(item => {
+        item.addEventListener('click', () => {
+          speciesSelect.value = item.dataset.species;
+          hideSpeciesModal();
+        });
+      });
+      
+      document.getElementById('species-modal').classList.add('show');
+    }
+
+    function hideSpeciesModal() {
+      document.getElementById('species-modal').classList.remove('show');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Start
+    init();
+    
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW registration failed:', err));
+    }
+  </script>
+</body>
+</html>
